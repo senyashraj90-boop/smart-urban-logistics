@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>S-ULCT | Smart Urban Logistics Control Tower</title>
+
+<style>
+
+*{
+box-sizing:border-box;
+margin:0;
+padding:0;
+font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+background:#f1f5f9;
+color:#172033;
+}
+
+/* HEADER */
+
+.header{
+height:65px;
+background:#0f172a;
+color:white;
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:0 25px;
+position:sticky;
+top:0;
+z-index:100;
+}
+
+.logo{
+font-size:20px;
+font-weight:bold;
+}
+
+.logo span{
+color:#38bdf8;
+}
+
+.system{
+font-size:13px;
+color:#86efac;
+}
+
+/* LAYOUT */
+
+.layout{
+display:flex;
+min-height:calc(100vh - 65px);
+}
+
+/* SIDEBAR */
+
+.sidebar{
+width:235px;
+background:#111827;
+padding:18px 12px;
+color:white;
+}
+
+.sidebar h4{
+color:#64748b;
+font-size:11px;
+padding:12px;
+text-transform:uppercase;
+}
+
+.nav{
+width:100%;
+padding:13px;
+border:0;
+background:transparent;
+color:#cbd5e1;
+text-align:left;
+border-radius:8px;
+margin:3px 0;
+cursor:pointer;
+font-size:14px;
+}
+
+.nav:hover,
+.nav.active{
+background:#2563eb;
+color:white;
+}
+
+/* MAIN */
+
+.main{
+flex:1;
+padding:25px;
+overflow:auto;
+}
+
+.page{
+display:none;
+}
+
+.page.active{
+display:block;
+}
+
+.heading{
+font-size:25px;
+font-weight:bold;
+}
+
+.sub{
+color:#64748b;
+margin-top:5px;
+margin-bottom:20px;
+}
+
+/* CARDS */
+
+.cards{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+gap:15px;
+}
+
+.card{
+background:white;
+padding:20px;
+border-radius:13px;
+box-shadow:0 3px 15px #0000000d;
+}
+
+.card-title{
+font-size:13px;
+color:#64748b;
+}
+
+.value{
+font-size:29px;
+font-weight:bold;
+margin-top:8px;
+}
+
+.green{color:#16a34a;}
+.red{color:#dc2626;}
+.yellow{color:#ca8a04;}
+.blue{color:#2563eb;}
+
+/* GRID */
+
+.grid{
+display:grid;
+grid-template-columns:2fr 1fr;
+gap:20px;
+margin-top:20px;
+}
+
+.panel{
+background:white;
+padding:20px;
+border-radius:13px;
+box-shadow:0 3px 15px #0000000d;
+}
+
+.panel h3{
+margin-bottom:15px;
+}
+
+/* MAP */
+
+.map{
+height:350px;
+border-radius:12px;
+position:relative;
+overflow:hidden;
+
+background-color:#dbeafe;
+
+background-image:
+linear-gradient(45deg,#94a3b855 2%,transparent 2%),
+linear-gradient(-45deg,#94a3b855 2%,transparent 2%),
+linear-gradient(#94a3b855 1px,transparent 1px),
+linear-gradient(90deg,#94a3b855 1px,transparent 1px);
+
+background-size:90px 90px,90px 90px,45px 45px,45px 45px;
+}
+
+/* ROADS */
+
+.road{
+position:absolute;
+background:#64748b;
+}
+
+.road1{
+height:8px;
+width:100%;
+top:50%;
+}
+
+.road2{
+width:8px;
+height:100%;
+left:50%;
+}
+
+/* ZONES */
+
+.zone{
+position:absolute;
+padding:10px 14px;
+border-radius:10px;
+font-size:12px;
+font-weight:bold;
+box-shadow:0 3px 10px #0003;
+}
+
+.zoneA{
+top:35px;
+left:30px;
+background:#fecaca;
+color:#991b1b;
+}
+
+.zoneB{
+right:35px;
+top:50px;
+background:#fef08a;
+color:#854d0e;
+}
+
+.zoneC{
+bottom:40px;
+left:40%;
+background:#bbf7d0;
+color:#166534;
+}
+
+/* VEHICLES */
+
+.vehicle{
+position:absolute;
+font-size:20px;
+}
+
+.v1{top:46%;left:20%;}
+.v2{top:46%;left:65%;}
+.v3{top:25%;left:48%;}
+.v4{top:70%;left:48%;}
+
+/* AI */
+
+.ai{
+background:#eff6ff;
+border-left:5px solid #2563eb;
+padding:16px;
+border-radius:8px;
+line-height:1.6;
+}
+
+.ai strong{
+color:#1d4ed8;
+}
+
+/* BUTTON */
+
+.btn{
+background:#2563eb;
+color:white;
+border:0;
+padding:11px 17px;
+border-radius:8px;
+cursor:pointer;
+font-weight:bold;
+}
+
+.btn:hover{
+background:#1d4ed8;
+}
+
+/* TRAFFIC */
+
+.traffic-row{
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:12px 0;
+border-bottom:1px solid #e2e8f0;
+}
+
+.dot{
+width:12px;
+height:12px;
+border-radius:50%;
+display:inline-block;
+margin-right:8px;
+}
+
+.dot.red{background:#ef4444;}
+.dot.yellow{background:#eab308;}
+.dot.green{background:#22c55e;}
+
+/* TABLE */
+
+.table-box{
+overflow-x:auto;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+th,td{
+padding:12px;
+text-align:left;
+border-bottom:1px solid #e2e8f0;
+font-size:13px;
+}
+
+th{
+background:#f8fafc;
+}
+
+/* BADGES */
+
+.badge{
+padding:5px 9px;
+border-radius:15px;
+font-size:11px;
+font-weight:bold;
+}
+
+.badge.green{
+background:#dcfce7;
+}
+
+.badge.yellow{
+background:#fef9c3;
+}
+
+.badge.red{
+background:#fee2e2;
+}
+
+/* FORM */
+
+.form{
+display:grid;
+gap:12px;
+}
+
+input,select{
+width:100%;
+padding:12px;
+border:1px solid #cbd5e1;
+border-radius:8px;
+}
+
+.result{
+display:none;
+margin-top:15px;
+padding:15px;
+background:#dcfce7;
+color:#166534;
+border-radius:8px;
+line-height:1.7;
+}
+
+/* ALERT */
+
+.alert{
+padding:14px;
+border-radius:8px;
+background:#fffbeb;
+border-left:5px solid #f59e0b;
+margin-bottom:10px;
+}
+
+.alert.red{
+background:#fef2f2;
+border-color:#ef4444;
+}
+
+/* CHART */
+
+.chart{
+height:180px;
+display:flex;
+align-items:end;
+gap:12px;
+padding:15px;
+}
+
+.bar{
+flex:1;
+background:#2563eb;
+border-radius:5px 5px 0 0;
+min-height:20px;
+}
+
+/* MOBILE */
+
+@media(max-width:800px){
+
+.sidebar{
+width:65px;
+}
+
+.sidebar h4{
+display:none;
+}
+
+.nav{
+font-size:0;
+text-align:center;
+}
+
+.nav:first-letter{
+font-size:20px;
+}
+
+.header{
+padding:0 12px;
+}
+
+.header .system{
+display:none;
+}
+
+.main{
+padding:15px;
+}
+
+.grid{
+grid-template-columns:1fr;
+}
+
+.map{
+height:280px;
+}
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<!-- HEADER -->
+
+<header class="header">
+
+<div class="logo">
+🚦 <span>S-ULCT</span>
+</div>
+
+<div>
+Smart Urban Logistics Control Tower
+</div>
+
+<div class="system">
+● SYSTEM ONLINE
+</div>
+
+</header>
+
+
+<div class="layout">
+
+
+<!-- SIDEBAR -->
+
+<aside class="sidebar">
+
+<h4>CONTROL TOWER</h4>
+
+<button class="nav active"
+onclick="page('dashboard',this)">
+📊 Dashboard
+</button>
+
+<button class="nav"
+onclick="page('traffic',this)">
+🗺️ Traffic
+</button>
+
+<button class="nav"
+onclick="page('slots',this)">
+📅 Smart Slots
+</button>
+
+<button class="nav"
+onclick="page('vehicles',this)">
+🚚 Vehicles
+</button>
+
+<button class="nav"
+onclick="page('alerts',this)">
+🔔 Alerts
+</button>
+
+<h4>PUBLIC</h4>
+
+<button class="nav"
+onclick="page('citizen',this)">
+👥 Citizen
+</button>
+
+</aside>
+
+
+<!-- MAIN -->
+
+<main class="main">
+
+
+<!-- DASHBOARD -->
+
+<section id="dashboard" class="page active">
+
+<h1 class="heading">
+City Control Tower
+</h1>
+
+<p class="sub">
+Real-time urban logistics monitoring & AI decision support
+</p>
+
+
+<!-- KPI -->
+
+<div class="cards">
+
+<div class="card">
+<div class="card-title">
+TRAFFIC LOAD
+</div>
+
+<div class="value yellow"
+id="trafficValue">
+68%
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div class="card-title">
+ACTIVE VEHICLES
+</div>
+
+<div class="value blue"
+id="vehicleValue">
+124
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div class="card-title">
+TODAY'S SLOTS
+</div>
+
+<div class="value green">
+86
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div class="card-title">
+ACTIVE ALERTS
+</div>
+
+<div class="value red">
+7
+</div>
+
+</div>
+
+</div>
+
+
+<!-- MAP + AI -->
+
+<div class="grid">
+
+
+<div class="panel">
+
+<h3>🗺️ Live City Traffic</h3>
+
+<div class="map">
+
+<div class="road road1"></div>
+<div class="road road2"></div>
+
+<div class="zone zoneA">
+Zone A<br>
+🔴 Heavy 82%
+</div>
+
+<div class="zone zoneB">
+Zone B<br>
+🟡 Medium 55%
+</div>
+
+<div class="zone zoneC">
+Zone C<br>
+🟢 Low 24%
+</div>
+
+<div class="vehicle v1">🚚</div>
+<div class="vehicle v2">🚛</div>
+<div class="vehicle v3">🚚</div>
+<div class="vehicle v4">🚛</div>
+
+</div>
+
+</div>
+
+
+<div class="panel">
+
+<h3>🤖 AI Decision Support</h3>
+
+<div class="ai">
+
+<strong>Traffic Analysis</strong>
+
+<p>
+Zone A congestion is high.
+</p>
+
+<br>
+
+<strong>Recommended Action</strong>
+
+<p>
+Redirect vehicles through
+Route B.
+</p>
+
+<br>
+
+<strong>Expected Impact</strong>
+
+<p>
+Delay ↓ 18 min<br>
+Fuel usage ↓ 12%<br>
+Utilization ↑ 14%
+</p>
+
+</div>
+
+<br>
+
+<button class="btn"
+onclick="runAI()">
+
+Run AI Optimization
+
+</button>
+
+<div id="aiResult"
+style="margin-top:12px">
+</div>
+
+</div>
+
+</div>
+
+
+<!-- TRAFFIC STATUS -->
+
+<div class="panel"
+style="margin-top:20px">
+
+<h3>📡 Real-Time Traffic Status</h3>
+
+<div class="traffic-row">
+
+<span>
+<span class="dot red"></span>
+Zone A
+</span>
+
+<b>82%</b>
+
+</div>
+
+<div class="traffic-row">
+
+<span>
+<span class="dot yellow"></span>
+Zone B
+</span>
+
+<b>55%</b>
+
+</div>
+
+<div class="traffic-row">
+
+<span>
+<span class="dot green"></span>
+Zone C
+</span>
+
+<b>24%</b>
+
+</div>
+
+</div>
+
+
+</section>
+
+
+
+<!-- TRAFFIC PAGE -->
+
+<section id="traffic" class="page">
+
+<h1 class="heading">
+Traffic & Route Optimization
+</h1>
+
+<p class="sub">
+AI-based traffic analysis and route planning
+</p>
+
+
+<div class="panel">
+
+<div class="map">
+
+<div class="road road1"></div>
+<div class="road road2"></div>
+
+<div class="zone zoneA">
+🔴 Zone A
+</div>
+
+<div class="zone zoneB">
+🟡 Zone B
+</div>
+
+<div class="zone zoneC">
+🟢 Zone C
+</div>
+
+<div class="vehicle v1">🚚</div>
+<div class="vehicle v2">🚛</div>
+
+</div>
+
+<br>
+
+<button class="btn"
+onclick="runRoute()">
+
+🤖 Optimize Route
+
+</button>
+
+<div id="routeResult"
+class="result">
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- SLOTS -->
+
+<section id="slots" class="page">
+
+<h1 class="heading">
+Smart Slot Booking
+</h1>
+
+<p class="sub">
+AI-assisted logistics scheduling
+</p>
+
+
+<div class="panel">
+
+<div class="form">
+
+<label>Vehicle Number</label>
+
+<input
+id="vehicleInput"
+placeholder="MP09AB1234"
+>
+
+
+<label>Delivery Zone</label>
+
+<select id="zoneInput">
+
+<option>Zone A</option>
+<option>Zone B</option>
+<option>Zone C</option>
+
+</select>
+
+
+<label>Priority</label>
+
+<select id="priorityInput">
+
+<option>Normal</option>
+<option>High</option>
+<option>Emergency</option>
+
+</select>
+
+
+<button class="btn"
+onclick="allocateSlot()">
+
+📅 Allocate Smart Slot
+
+</button>
+
+</div>
+
+
+<div id="slotResult"
+class="result">
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- VEHICLES -->
+
+<section id="vehicles" class="page">
+
+<h1 class="heading">
+Fleet & Logistics
+</h1>
+
+<p class="sub">
+Vehicle monitoring and resource utilization
+</p>
+
+
+<div class="panel">
+
+<div class="table-box">
+
+<table>
+
+<tr>
+<th>Vehicle</th>
+<th>Zone</th>
+<th>Status</th>
+<th>ETA</th>
+<th>Utilization</th>
+</tr>
+
+
+<tr>
+
+<td>MP09AB1234</td>
+
+<td>Zone A</td>
+
+<td>
+<span class="badge red">
+On Route
+</span>
+</td>
+
+<td>12 min</td>
+
+<td>88%</td>
+
+</tr>
+
+
+<tr>
+
+<td>MP09CD5678</td>
+
+<td>Zone B</td>
+
+<td>
+<span class="badge yellow">
+Waiting
+</span>
+</td>
+
+<td>25 min</td>
+
+<td>61%</td>
+
+</tr>
+
+
+<tr>
+
+<td>MP09EF9012</td>
+
+<td>Zone C</td>
+
+<td>
+<span class="badge green">
+Delivered
+</span>
+</td>
+
+<td>Done</td>
+
+<td>94%</td>
+
+</tr>
+
+
+<tr>
+
+<td>MP09GH3456</td>
+
+<td>Zone A</td>
+
+<td>
+<span class="badge green">
+Available
+</span>
+</td>
+
+<td>-</td>
+
+<td>72%</td>
+
+</tr>
+
+</table>
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- ALERTS -->
+
+<section id="alerts" class="page">
+
+<h1 class="heading">
+Alerts & Notifications
+</h1>
+
+<p class="sub">
+Real-time logistics and traffic alerts
+</p>
+
+
+<div class="panel">
+
+<div class="alert red">
+
+⚠️ <b>Critical Traffic</b>
+
+<br>
+
+Heavy congestion detected in Zone A.
+
+</div>
+
+
+<div class="alert">
+
+🚚 <b>Vehicle Queue</b>
+
+<br>
+
+12 vehicles are waiting for smart slots.
+
+</div>
+
+
+<div class="alert">
+
+📅 <b>High Demand</b>
+
+<br>
+
+Slot demand expected to increase
+between 11:00 AM and 1:00 PM.
+
+</div>
+
+
+<div class="alert">
+
+🗺️ <b>Route Recommendation</b>
+
+<br>
+
+Route B currently has lower traffic.
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- CITIZEN -->
+
+<section id="citizen" class="page">
+
+<h1 class="heading">
+Citizen Mobility Dashboard
+</h1>
+
+<p class="sub">
+Public traffic and route information
+</p>
+
+
+<div class="cards">
+
+<div class="card">
+
+<div class="card-title">
+CURRENT TRAFFIC
+</div>
+
+<div class="value yellow">
+Medium
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div class="card-title">
+AVERAGE DELAY
+</div>
+
+<div class="value">
+12 min
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div class="card-title">
+RECOMMENDED ROUTE
+</div>
+
+<div class="value green">
+Route B
+</div>
+
+</div>
+
+</div>
+
+
+<div class="panel"
+style="margin-top:20px">
+
+<h3>
+🗺️ Smart Route Recommendation
+</h3>
+
+<div class="ai">
+
+Avoid <b>Zone A</b> because of
+heavy traffic.
+
+<br><br>
+
+Recommended route:
+
+<strong>Route B</strong>
+
+<br><br>
+
+Estimated travel time:
+
+<strong>24 minutes</strong>
+
+</div>
+
+</div>
+
+</section>
+
+
+</main>
+
+</div>
+
+
+
+<script>
+
+
+/* PAGE NAVIGATION */
+
+function page(id,button){
+
+document
+.querySelectorAll(".page")
+.forEach(x=>x.classList.remove("active"));
+
+document
+.getElementById(id)
+.classList.add("active");
+
+document
+.querySelectorAll(".nav")
+.forEach(x=>x.classList.remove("active"));
+
+button.classList.add("active");
+
+}
+
+
+/* AI */
+
+function runAI(){
+
+document.getElementById("aiResult").innerHTML=
+
+"✅ <b>Optimization Complete</b><br>" +
+
+"Route B selected<br>" +
+
+"Estimated delay reduction: 18 min";
+
+}
+
+
+/* ROUTE */
+
+function runRoute(){
+
+let result=
+document.getElementById("routeResult");
+
+result.style.display="block";
+
+result.innerHTML=
+
+"✅ <b>AI Route Optimization Complete</b><br><br>" +
+
+"Current Route: Route A<br>" +
+
+"Recommended Route: <b>Route B</b><br>" +
+
+"Estimated ETA: <b>24 minutes</b><br>" +
+
+"Expected delay reduction: <b>18 minutes</b>";
+
+}
+
+
+/* SLOT */
+
+function allocateSlot(){
+
+let vehicle=
+document.getElementById("vehicleInput").value;
+
+let zone=
+document.getElementById("zoneInput").value;
+
+let priority=
+document.getElementById("priorityInput").value;
+
+let result=
+document.getElementById("slotResult");
+
+
+result.style.display="block";
+
+
+if(vehicle===""){
+
+result.style.background="#fee2e2";
+
+result.style.color="#991b1b";
+
+result.innerHTML=
+"❌ Please enter vehicle number.";
+
+return;
+
+}
+
+
+result.style.background="#dcfce7";
+
+result.style.color="#166534";
+
+
+result.innerHTML=
+
+"✅ <b>Smart Slot Allocated</b><br><br>" +
+
+"Vehicle: "+vehicle+"<br>" +
+
+"Zone: "+zone+"<br>" +
+
+"Priority: "+priority+"<br>" +
+
+"Allocated Slot: <b>10:30 AM - 11:00 AM</b><br>" +
+
+"Estimated Waiting Time: <b>8 minutes</b>";
+
+}
+
+
+/* DEMO LIVE DATA */
+
+setInterval(function(){
+
+let traffic=
+Math.floor(Math.random()*15)+65;
+
+document
+.getElementById("trafficValue")
+.innerText=
+traffic+"%";
+
+
+let vehicles=
+Math.floor(Math.random()*15)+115;
+
+document
+.getElementById("vehicleValue")
+.innerText=
+vehicles;
+
+},5000);
+
+
+</script>
+
+</body>
+</html>
